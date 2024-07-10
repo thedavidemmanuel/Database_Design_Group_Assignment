@@ -23,3 +23,8 @@ def prepare_data(entry):
     input_data = [entry.get(feature, 0) for feature in features]
     return np.array([input_data])
 
+def make_prediction(model, input_data):
+    """Use the model to make a prediction"""
+    prediction = model.predict(input_data)
+    return prediction[0][0]  # Assuming binary classification (0 or 1)
+

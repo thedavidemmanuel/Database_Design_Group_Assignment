@@ -15,3 +15,11 @@ def fetch_latest_entry():
             return entries[-1]  # Return the last (latest) entry
     return None
 
+def prepare_data(entry):
+    """Prepare the input data for prediction"""
+    features = ['ph', 'hardness', 'solids', 'chloramines', 'sulfate',
+                'conductivity', 'organic_carbon', 'trihalomethanes', 'turbidity']
+
+    input_data = [entry.get(feature, 0) for feature in features]
+    return np.array([input_data])
+

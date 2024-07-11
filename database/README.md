@@ -54,10 +54,3 @@ This table stores the potability status associated with each water quality entry
 
    - `WaterQuality` table stores detailed measurements of water quality.
    - `WaterPotability` table links each quality measurement to its potability status.
-
-4. **Contributing**
-   - Feel free to fork this repository, make improvements, and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

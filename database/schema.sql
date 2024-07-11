@@ -1,20 +1,21 @@
--- Create the water_samples table
-CREATE TABLE water_samples (
-    sample_id SERIAL PRIMARY KEY,
-    ph NUMERIC(8, 6),
-    hardness NUMERIC(10, 4),
-    solids NUMERIC(10, 4),
-    chloramines NUMERIC(8, 6),
-    sulfate NUMERIC(8, 4),
-    conductivity NUMERIC(8, 4),
-    organic_carbon NUMERIC(8, 6),
-    trihalomethanes NUMERIC(8, 6),
-    turbidity NUMERIC(8, 6)
+-- Create the WaterQuality table
+CREATE TABLE WaterQuality (
+    id SERIAL PRIMARY KEY,
+    ph FLOAT NOT NULL DEFAULT 0,
+    Hardness FLOAT NOT NULL DEFAULT 0,
+    Solids FLOAT NOT NULL DEFAULT 0,
+    Chloramines FLOAT NOT NULL DEFAULT 0,
+    Sulfate FLOAT NOT NULL DEFAULT 0,
+    Conductivity FLOAT NOT NULL DEFAULT 0,
+    Organic_carbon FLOAT NOT NULL DEFAULT 0,
+    Trihalomethanes FLOAT NOT NULL DEFAULT 0,
+    Turbidity FLOAT NOT NULL DEFAULT 0
 );
 
--- Create the potability_results table
-CREATE TABLE potability_results (
-    result_id SERIAL PRIMARY KEY,
-    sample_id INTEGER REFERENCES water_samples(sample_id),
-    potability INTEGER
+-- Create the WaterPotability table
+CREATE TABLE WaterPotability (
+    id SERIAL PRIMARY KEY,
+    water_quality_id INT,
+    Potability INT,
+    FOREIGN KEY (water_quality_id) REFERENCES WaterQuality(id)
 );

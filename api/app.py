@@ -15,14 +15,6 @@ mongo = PyMongo(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load the ML model
-try:
-    model = tf.keras.models.load_model('water_quality_model.h5')
-    logger.info("ML model loaded successfully")
-except Exception as e:
-    logger.error(f"Failed to load ML model: {str(e)}")
-    model = None
-
 # Schemas for validation
 class AdminSchema(Schema):
     name = fields.Str(required=True)
@@ -139,37 +131,6 @@ def delete_water_quality(id):
         return jsonify({"message": "Water quality entry deleted"}), 200
     return jsonify({"message": "Entry not found"}), 404
 
-# Prediction Route
-@app.route('/predict', methods=['GET'])
-@handle_errors
-def predict():
-    if model is None:
-        return jsonify({"error": "ML model not available"}), 500
-
-    latest_entry = mongo.db.waterquality.find_one(sort=[('_id', -1)])
-    
-    if not latest_entry:
-        return jsonify({"message": "No water quality data available"}), 404
-    
-    input_data = [
-        latest_entry['ph'], latest_entry['hardness'], latest_entry['solids'],
-        latest_entry['chloramines'], latest_entry['sulfate'], latest_entry['conductivity'],
-        latest_entry['organic_carbon'], latest_entry['trihalomethanes'], latest_entry['turbidity']
-    ]
-    
-    prediction = model.predict([input_data])[0]
-    
-    mongo.db.waterquality.update_one(
-        {"_id": latest_entry['_id']},
-        {"$set": {"potability": bool(prediction[0] > 0.5)}}
-    )
-    
-    return jsonify({
-        "message": "Prediction made",
-        "water_quality_id": str(latest_entry['_id']),
-        "prediction": bool(prediction[0] > 0.5),
-        "confidence": float(prediction[0])
-    }), 200
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0')

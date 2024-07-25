@@ -28,3 +28,35 @@ def get_water_quality_data():
         return response.json()
     else:
         raise Exception(f"Failed to fetch data: {response.status_code}\nResponse content: {response.text}")
+
+def prepare_data(data):
+    """Prepare the data for prediction"""
+    if not data:
+        raise ValueError("The API returned an empty dataset")
+
+    df = pd.DataFrame(data)
+    print("Columns in the data:")
+    print(df.columns)
+    print("\nFirst few rows of the data:")
+    print(df.head())
+
+    # Select only the features used in training
+    features = ['ph', 'hardness', 'solids', 'chloramines', 'sulfate',
+                'conductivity', 'organic_carbon', 'trihalomethanes', 'turbidity']
+
+    # Check if all required features are present
+    missing_features = [f for f in features if f not in df.columns]
+    if missing_features:
+        raise ValueError(f"Missing features in the data: {missing_features}")
+
+    X = df[features]
+
+    # Standardize the features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    return X_scaled
+
+def make_predictions(X):
+    """Make predictions using the loaded model"""
+    return model.predict(X)

@@ -60,3 +60,37 @@ def prepare_data(data):
 def make_predictions(X):
     """Make predictions using the loaded model"""
     return model.predict(X)
+
+def main():
+    try:
+        # Fetch data from API
+        print("Fetching water quality data from API...")
+        water_quality_data = get_water_quality_data()
+
+        # Prepare data for prediction
+        print("Preparing data for prediction...")
+        X = prepare_data(water_quality_data)
+
+        # Make predictions
+        print("Making predictions...")
+        predictions = make_predictions(X)
+
+        # Add predictions to the original data
+        for i, entry in enumerate(water_quality_data):
+            entry['prediction'] = predictions[i]
+
+        # Print results
+        print("\nPrediction Results:")
+        for entry in water_quality_data:
+            print(f"ID: {entry.get('_id', 'N/A')}")
+            print(f"Location ID: {entry.get('location_id', 'N/A')}")
+            print(f"Prediction: {'Safe' if entry['prediction'] == 1 else 'Unsafe'}")
+            print("---")
+
+        print(f"Total entries processed: {len(water_quality_data)}")
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+if _name_ == "_main_":
+    main()
